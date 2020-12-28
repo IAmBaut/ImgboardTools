@@ -2,7 +2,18 @@
 
 Python code for a CLI tool with various features, mostly for use on imageboards.
 
-Stuff is probably not very optimized, but it works.
+Stuff is probably not very optimized and has no error handling, but it works.
+
+## Requirements
+
+You need the following python libraries:
+* Pillow, get it with `pip install pillow`
+
+You also need the following software/executables:
+* ffmpeg
+* pngcrush
+
+## Usage
 
 Works as a CLI tool. To get started use
 

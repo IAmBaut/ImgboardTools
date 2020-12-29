@@ -99,6 +99,40 @@ def greyifyImg(imagepath,R=127,G=127,B=127):
     os.remove("hidden_need_trns.png")
     print("Done. Your new file is 'hidden.png'.")
 
+def curseVid(inputfile,outputfile="cursed"):
+    if len(inputfile)>=5 and inputfile[-4:]==".mp4":
+        if len(outputfile)<5 or outputfile[-4:]!=".mp4":
+            outputname=outputfile+".mp4"
+        else:
+            outputname=outputfile
+        with open(inputfile,"rb") as f:
+            content=f.read().hex()
+            #The header info we are looking for in a mp4 file starts with "mvhd" which is "6d 76 68 64"
+            #Every 2 indexes of our string = 1 Hex value.
+            startindex=content.find("6d766864")+8 #We jump 4 hex values to skip our mvhd string.
+            workingindex=startindex+24 #12 bytes after that is the relevant data
+            unitspersec="00000001"
+            totalunits="7FFFFFFF" #max value, can also be negative
+            content=content[:workingindex]+unitspersec+totalunits+content[workingindex+16:]
+            with open(outputname,"wb") as file:
+                file.write(bytes.fromhex(content))
+                print("Done. Your mp4 file "+outputname+" now has a very long corrupted length header.")
+    elif len(inputfile)>=6 and inputfile[-5:]==".webm":
+        if len(outputfile)<6 or outputfile[-5:]!=".webm":
+            outputname=outputfile+".webm"
+        else:
+            outputname=outputfile
+        with open(inputfile,"rb") as f:
+            content=f.read().hex()
+            startindex=content.find("2ad7b1")+6
+            index=content.find("4489",startindex)+4
+            if content[index:index+2]=="84":
+                content=content[:index]+"88"+"00000000"+content[index+2:]
+            lengthchunk="3ff0000000000000"
+            content=content[:index+2]+lengthchunk+content[index+2+len(lengthchunk):]
+            with open(outputname,"wb") as output:
+                output.write(bytes.fromhex(content))
+                print("Done. The webm file "+outputname+" now has corrupted length.")
 
 """
 Parser info
@@ -109,6 +143,7 @@ def main():
     parser.add_argument("-w",nargs="+",help="Change \"title\" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]",dest="webm")
     parser.add_argument("-m",nargs="+",help="Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]",dest="mix")
     parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R,G,B)]",dest="greyify")
+    parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile)]",dest="curse")
     args=parser.parse_args()
 
     if args.anonymize:
@@ -119,6 +154,8 @@ def main():
         hideIMG(*args.mix)
     if args.greyify:
         greyifyImg(*args.greyify)
+    if args.curse:
+        curseVid(*args.curse)
 
 if __name__ == '__main__':
     main()

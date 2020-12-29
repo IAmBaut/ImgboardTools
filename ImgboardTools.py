@@ -62,7 +62,7 @@ def hideIMG(thumbnail_img,hidden_img,mode=""):
     if mode!="":
         image_2=image_2.convert(mode)
     image_2.save("need_gAMA.png")
-    subprocess.check_call(["pngcrush -replace_gamma","0.023","need_gAMA.png","output.png"])
+    subprocess.check_call(["pngcrush","-replace_gamma","0.023","need_gAMA.png","output.png"])
     os.remove("need_gAMA.png")
     print("Done. Your new file is 'output.png'.")
 

@@ -66,7 +66,10 @@ def hideIMG(thumbnail_img,hidden_img,mode=""):
     os.remove("need_gAMA.png")
     print("Done. Your new file is 'output.png'.")
 
-def greyifyImg(imagepath):
+def greyifyImg(imagepath,color=(127,127,127)):
+    bgc=list(color)
+    bgc[2]=bgc[2]-1
+    bgc=tuple(bgc)
     #load image
     image=Image.open(imagepath)
     #remove transparency
@@ -83,11 +86,11 @@ def greyifyImg(imagepath):
         for y in range(image.size[1]):
             px=image.getpixel((x,y))
             if px==(0,0,0):
-                image.putpixel((x,y),(127, 127, 126))
+                image.putpixel((x,y),bgc)
             elif px==(255,255,255):
-                image.putpixel((x,y),(127, 127, 127))
+                image.putpixel((x,y),color)
     image.save("hidden_need_trns.png")
-    subprocess.check_call("pngcrush -trns 0 127 127 126 0 hidden_need_trns.png hidden.png".split())
+    subprocess.check_call(("pngcrush -trns 0 "+str(bgc[0])+" "+str(bgc[1])+" "+str(bgc[2])+" 0 hidden_need_trns.png hidden.png").split())
     os.remove("hidden_need_trns.png")
     print("Done. Your new file is 'hidden.png'.")
 
@@ -100,7 +103,7 @@ def main():
     parser.add_argument("-a",nargs=1,help="Delete identifying EXIF data on a jpg. [filename]",dest='anonymize')
     parser.add_argument("-w",nargs="+",help="Change \"title\" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]",dest="webm")
     parser.add_argument("-m",nargs="+",help="Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]",dest="mix")
-    parser.add_argument("-g",nargs=1,help="Hide image on grey background. [imagepath]",dest="greyify")
+    parser.add_argument("-g",nargs=1,help="Hide image on grey background. [imagepath,(color)]",dest="greyify")
     args=parser.parse_args()
 
     if args.anonymize:

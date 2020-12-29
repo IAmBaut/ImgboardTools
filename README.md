@@ -27,7 +27,7 @@ Features so far (checked means implemented):
 - [x] Add command line interface to the program.
 - [x] Add feature to hide image in grey background by messing with PNG "trns" chunks and colors.
 
-Note that the help messages of argparse has some custom syntax:
+Note that the help messages of argparse have some custom syntax:
 
  * Brackets [] contain the expected arguments.
  * Arguments in parentheses () are optional.

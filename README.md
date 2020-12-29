@@ -21,6 +21,27 @@ Works as a CLI tool. To get started use
 
     python ImgboardTools.py -h
 
+which will display the help window:
+
+      -h, --help            show this help message and exit
+      -a ANONYMIZE          Delete identifying EXIF data on a jpg. [filename]
+      -w WEBM            Change "title" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]
+      -m MIX             Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]
+      -g GREYIFY         Hide image on grey background. [imagepath,(R,G,B)]
+      -c CURSE           Curse a webm or mp4 video file length [inputfile,(outputfile)]
+
+Note that the help messages of argparse have some custom syntax:
+
+* Brackets [] contain the expected arguments.
+* Arguments in parentheses () are optional.
+* Arguments in braces {} are possible example values.
+
+## Examples
+
+So for example to mix two images you would call:
+
+    python ImgboardTools.py -m front.png back.png
+
 Features so far (checked means implemented):
 
 - [x] Anonymize images by deleting EXIF data out of them.
@@ -30,11 +51,7 @@ Features so far (checked means implemented):
 - [x] Add feature to hide image in grey background by messing with PNG "trns" chunks and colors.
 - [x] Add feature to "curse" webm or mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
 
-Note that the help messages of argparse have some custom syntax:
 
- * Brackets [] contain the expected arguments.
- * Arguments in parentheses () are optional.
- * Arguments in braces {} are possible example values.
 
 ## Troubleshooting
 

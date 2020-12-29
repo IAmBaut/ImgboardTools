@@ -1,4 +1,7 @@
-from PIL import Image,ImageChops
+try:
+    from PIL import Image,ImageChops
+except ImportError:
+    sys.exit("Module PIL missing.\nAborting.")
 import subprocess
 import os
 import argparse
@@ -61,6 +64,7 @@ def hideIMG(thumbnail_img,hidden_img,mode=""):
                 im2[x,y]=tuple(temp)
     if mode!="":
         image_2=image_2.convert(mode)
+    image_2.info = {}
     image_2.save("need_gAMA.png")
     subprocess.check_call(["pngcrush","-replace_gamma","0.023","need_gAMA.png","output.png"])
     os.remove("need_gAMA.png")

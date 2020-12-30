@@ -25,10 +25,10 @@ which will display the help window:
 
       -h, --help            show this help message and exit
       -a ANONYMIZE          Delete identifying EXIF data on a jpg. [filename]
-      -w WEBM            Change "title" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]
-      -m MIX             Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]
-      -g GREYIFY         Hide image on grey background. [imagepath,(R,G,B)]
-      -c CURSE           Curse a webm or mp4 video file length [inputfile,(outputfile)]
+      -w WEBM               Change "title" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]
+      -m MIX                Hide image in another image. [thumbnail_img, hidden_img,(mode{L/RGB/RGBA/CMYK})]
+      -g GREYIFY            Hide image on grey background. [imagepath,(R),(G),(B)]
+      -c CURSE              Curse a webm or mp4 video file length [inputfile,(outputfile)]
 
 Note that the help messages of argparse have some custom syntax:
 

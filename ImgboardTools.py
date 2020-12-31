@@ -22,10 +22,16 @@ def changeWebmTitle(title,inputfile="vid.webm",outputfile=""):
         outputfile=inputfile
     elif len(outputfile)>=6 and outputfile[-5:]!=".webm":
         outputfile+=".webm"
-    os.rename((inputfile),("I_"+inputfile))
+    position=inputfile.rfind("/")
+    if position!=-1:
+        tempfile=inputfile[:position+1]+"I_"+inputfile[position+1:]
+    position=inputfile.rfind("\\")
+    if position!=-1:
+        tempfile=inputfile[:position+1]+"I_"+inputfile[position+1:]
+    os.rename(inputfile,tempfile)
     #Calling the ffmpeg command to change metadata.
-    subprocess.check_call(["ffmpeg","-i","I_"+inputfile,"-metadata","title="+title,"-codec","copy",outputfile])
-    os.remove("I_"+inputfile)
+    subprocess.check_call(["ffmpeg","-i",tempfile,"-metadata","title="+title,"-codec","copy",outputfile])
+    os.remove(tempfile)
     print("Webm metadata edited.")
     return True
 

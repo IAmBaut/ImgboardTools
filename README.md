@@ -49,7 +49,8 @@ Features so far (checked means implemented):
 - [x] Combine/Hide two images within each other by messing with PNG gamma values and brightness
 - [x] Add command line interface to the program.
 - [x] Add feature to hide image in grey background by messing with PNG "trns" chunks and colors.
-- [x] Add feature to "curse" webm or mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
+- [x] Add feature to "curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
+- [ ] Add a GUI application for the script. (This will most likely be an an affront to your eyes, but get the job done.)
 
 
 

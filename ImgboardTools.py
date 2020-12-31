@@ -11,6 +11,7 @@ def deleteExif(imagename):
     image = Image.open(imagename)
     image.save(imagename)
     print("EXIF data deleted")
+    return True
 
 def changeWebmTitle(title,inputfile="vid.webm",outputfile=""):
     #changes the title attribute of the webm metadata
@@ -26,6 +27,7 @@ def changeWebmTitle(title,inputfile="vid.webm",outputfile=""):
     subprocess.check_call(["ffmpeg","-i","I_"+inputfile,"-metadata","title="+title,"-codec","copy",outputfile])
     os.remove("I_"+inputfile)
     print("Webm metadata edited.")
+    return True
 
 def hideIMG(thumbnail_img,hidden_img,mode=""):
     """
@@ -66,6 +68,7 @@ def hideIMG(thumbnail_img,hidden_img,mode=""):
     subprocess.check_call(["pngcrush","-replace_gamma","0.023","need_gAMA.png","output.png"])
     os.remove("need_gAMA.png") #Removing temporary file.
     print("Done. Your new file is 'output.png'.")
+    return True
 
 def greyifyImg(imagepath,R=127,G=127,B=127):
     """
@@ -106,6 +109,7 @@ def greyifyImg(imagepath,R=127,G=127,B=127):
     subprocess.check_call(("pngcrush -trns 0 "+str(bgc[0])+" "+str(bgc[1])+" "+str(bgc[2])+" 0 hidden_need_trns.png hidden.png").split())
     os.remove("hidden_need_trns.png")
     print("Done. Your new file is 'hidden.png'.")
+    return True
 
 def curseVid(inputfile,outputfile="cursed"):
     """
@@ -148,6 +152,7 @@ def curseVid(inputfile,outputfile="cursed"):
             with open(outputname,"wb") as output: #Saving file
                 output.write(bytes.fromhex(content))
                 print("Done. The webm file "+outputname+" now has corrupted length.")
+                return True
 
 """
 Parser info

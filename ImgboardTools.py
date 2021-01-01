@@ -142,6 +142,7 @@ def curseVid(inputfile,outputfile="cursed"):
             with open(outputname,"wb") as file: #Saving file
                 file.write(bytes.fromhex(content))
                 print("Done. Your mp4 file "+outputname+" now has a very long corrupted length header.")
+                return True
     elif len(inputfile)>=6 and inputfile[-5:]==".webm":
         if len(outputfile)<6 or outputfile[-5:]!=".webm":
             outputname=outputfile+".webm"

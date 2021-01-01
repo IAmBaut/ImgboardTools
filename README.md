@@ -36,6 +36,12 @@ Note that the help messages of argparse have some custom syntax:
 * Arguments in parentheses () are optional.
 * Arguments in braces {} are possible example values.
 
+There is also a (very ugly) GUI application to allow for access to the features of the script. It should work cross platform.
+
+The GUI is experimental and may not be as up to date as the CLI and troubleshooting will be much harder on it.
+
+If you are on Windows you can save the GUI script as ".pyw" instead of ".py" to prevent the console from opening. This also means less feedback in case of errors though.
+
 ## Examples
 
 So for example to mix two images you would call:
@@ -50,10 +56,11 @@ Features so far (checked means implemented):
 - [x] Add command line interface to the program.
 - [x] Add feature to hide image in grey background by messing with PNG "trns" chunks and colors.
 - [x] Add feature to "curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
-- [ ] Add a GUI application for the script. (This will most likely be an an affront to your eyes, but get the job done.)
+- [x] Add a GUI application for the script. (This will most likely be an an affront to your eyes, but get the job done.)
+- [ ] Add further info / explanations for the features to readme.md.
 
 
 
 ## Troubleshooting
 
-If you get some error from the check_call command, or the error message otherwise states that "ffmpeg" or "pngcrush" aren't executables, you need to add their savelocation to the windows PATH variable.
+If you get some error from the check_call command, or the error message otherwise states that "ffmpeg" or "pngcrush" aren't executables, you need to add their savelocation to the windows PATH variable. If you are on Linux, make sure you have the dependencies installed.

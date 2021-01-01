@@ -57,9 +57,76 @@ Features so far (checked means implemented):
 - [x] Add feature to hide image in grey background by messing with PNG "trns" chunks and colors.
 - [x] Add feature to "curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
 - [x] Add a GUI application for the script. (This will most likely be an an affront to your eyes, but get the job done.)
-- [ ] Add further info / explanations for the features to readme.md.
+- [x] Add further info / explanations for the features to readme.md.
 
+## Explanations
 
+Some info on how / why some of these tricks work or why you may want to try some of the features.
+
+### EXIF data
+
+You can think of "Exchangeable Image File Format" (EXIF) data as metadata for images, containing information about the camera, location the image was taken etc. On the web you will most likely encounter it attached to .jpg files.
+While it contains plenty of info that is of use for photographers, it can also contain data that can be used to identify the person who shot it. Deleting EXIF data from photos is therefore a step you can take to protect your privacy.
+
+### Webm metadata
+
+Webms always contain metadata which can be used to add information on the artist, album etc. of the media shared. Especially the "title" attribute is widely supported.
+A lot of people on imageboards use .webm title attributes to add the source of their content to the file, so in the case that someone downloads their file and changes the filename, that data isn't being lost.
+This is especially important because some imageboards may change the filename upon download.
+In addition the popular browser extension 4ChanX natively can display the title of .webms with a simple mouse hover over a "title" link next to the embedded media, making accessing it extremely easy.
+If you do not have 4chanX, simply inspecting the properties of the file on Windows and various Linux distros also works.
+
+### Png image with a different thumbnail and expanded view
+
+The .png file format allows for various "chunks" of other data to be shipped with an image. One of these is the gAMA chunk, which basically tells a program to calculate the brightness of every pixel as the original brightness to the power of the gAMA chunk `x=x^gAMA` and display it with these modified values.
+
+For further light reading on why gAMA chunks exist:  [Henri Sivonen's website](https://hsivonen.fi/png-gamma/)
+
+To hide one image in another with the help of a gAMA chunk, we first need to map these images to two different brightness ranges.
+We map the thumbnail image to a brightness range of 0-210 (which can be done by applying a linear transformation to each color value of `x=x/255\*210`) and the brightness values of the hidden image to a range of 214-255 (with the linear transformation for each color value of `x=214+(x/255)\*(255-214)`).
+As a result the hidden image is now extremely bright and appears to the normal eye almost white.
+Next we need to combine these two images. We do this by replacing every 4th pixel (so every pixel where both the x and y index are uneven) of the thumbnail image with the hidden image.
+For a image with sufficiently high resolution this will just look like the thumbnail image has gotten slightly brighter.
+
+Then we apply the gAMA chunk with a value of 0.023 to the image, which is extremely low. The program trying to display the png will now take the brightness of every pixel to the power of 0.023 and thus darken the image significantly.
+As a result the thumbnail image pixels appear almost black, while the extremely bright pixels of the hidden image now become normal and thus the hidden image becomes visible. Unfortunately due to 3/4ths of the pixels now being black the hidden image will appear darker.
+
+The last part to this is that a lot of programs don't apply the gAMA chunk consistently. A lot of imageboards (and some applications like Discord or even the Windows image previews) will ignore theses auxiliary chunks like the gAMA chunk in the preview, thus only making the thumbnail image visible. Once you expand the image the chunk gets applied and the hidden image becomes visible.
+
+### Greyification / Ninja images
+
+Ninja images use another trick that works due to how most browsers / programs ignore .png chunks in previews. This mode works best with images that have no background (so the background is transparent).
+
+The motive is made monochrome (so pixels are either one color, or invisible), then inverted.
+Then the pixels of the motive are given a color (default is grey) and the background is given a slightly different color (the blue channel is shifted by a value of 1).
+This change is not visible to the naked eye, so the image seems one color.
+
+Next a tRNS chunk is added with the color value of the background. In the preview this chunk is ignored, but when expanded it gets applied and the background is made transparent, so the image appears.
+
+### Cursing video files
+
+Video files tend to have header information for the video player to know what to display and how to display it. We can mess with the this data at the right place to create weird effects or "cursed" videos.
+To edit these things we need to know where this data is contained. You can find the documentation for the filetypes here:
+
+* [.mp4 file documentation](https://www.cimarronsystems.com/wp-content/uploads/2017/04/Elements-of-the-H.264-VideoAAC-Audio-MP4-Movie-v2_0.pdf)
+* [.webm file documentation](https://www.matroska.org/technical/elements.html)
+
+You can also do these manipulations manually in a HEX editor.
+
+For *.mp4*:
+
+First we locate the string "mvhd" which has a hex value of 0x6D766864 (The 0x is a prefix to state that it's a hex value. In a Hex editor search for the bytes 6D 76 68 64). From there move another 12 bytes (1 byte = 1 hex value).
+This is where the interesting data is at: The first 8 bytes states how many units there are per second, while the next 8 bytes after that are how many units long the video is.
+To set this to a very big length we can set the first 8 bytes to 0x00000001 and the second 8 bytes to 0xFFFFFFFF (which is 4.294.967.295 in decimal).
+
+For *.webm*:
+
+First we locate the 3 bytes 0x2AD7B1. Then from there we search for the first occurrence of 0x4489.
+Some sources say you can just search for the first occurrence of 0x4489 and not bother with starting the search at 0x2AD7B1, but personally I would do it, just to make sure. The byte after that can either be 0x84 or 0x88.
+If this is 0x84 the next 4 bytes contain the information for the video length. If it is 0x88 the video length is contained in the next 8 bytes.
+In the case of this script if the identifier is 0x84 we replace it with 0x88 and insert 4 empty bytes of 0x00000000. Then we replace the 8 bytes after the identifier
+(just to clarify, this means we overwrite the empty bytes we just inserted as well) with the value 0x3ff0000000000000.
+You can play around with those values to see what they do, this particular value creates the kind of .webm that scales its length while playing.
 
 ## Troubleshooting
 

@@ -141,6 +141,10 @@ The generation of such files is actually pretty simple, the original file is cho
 
 ## Example images
 
+### GUI example
+
+![Showcase gif of the GUI](https://gitlab.com/Baut/readme-images/-/raw/master/ImgboardTools/GUIExample.gif)
+
 ### Hidden image
 
 This hidden image was generated with the following two images:
@@ -153,9 +157,13 @@ and appears as follows on imageboards:
 
 ### Ninja .png image
 
-![NinjaPng example on imageboard](https://gitlab.com/Baut/readme-images/-/blob/master/ImgboardTools/NinjaPngExample.gif)
+![NinjaPng example on imageboard](https://gitlab.com/Baut/readme-images/-/raw/master/ImgboardTools/NinjaPngExample.gif)
 
+### Distorting .webm / .webm with changing aspect ratios
 
+In this case with a (very modest) 3 changes per second. This can be much more or less.
+
+![Distorted .webm example](https://gitlab.com/Baut/readme-images/-/raw/master/ImgboardTools/DistortionExample3PerSec.gif)
 
 ## Troubleshooting
 

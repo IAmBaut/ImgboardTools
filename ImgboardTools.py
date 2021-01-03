@@ -236,6 +236,7 @@ def aspectMagic(inputfile,changesPerSec,outputfile="aspectMagic.webm"):
     subprocess.check_call(command)
     #Removing last bit of temporary data.
     os.remove("temporary_needAudio.webm")
+    print("Done. The webm",outputfile,"now changes its aspect ratio",changesPerSec,"times per second.")
     return True
 
 """
@@ -246,7 +247,7 @@ def main():
     parser.add_argument("-a",nargs=1,help="Delete identifying EXIF data on a jpg. [filename]",dest='anonymize')
     parser.add_argument("-w",nargs="+",help="Change \"title\" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]",dest="webm")
     parser.add_argument("-m",nargs="+",help="Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]",dest="mix")
-    parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R,G,B)]",dest="greyify")
+    parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R),(G),(B))]",dest="greyify")
     parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile)]",dest="curse")
     parser.add_argument("-d",nargs="+",help="Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]",dest="distort")
     args=parser.parse_args()

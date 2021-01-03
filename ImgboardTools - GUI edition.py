@@ -11,7 +11,7 @@ except ImportError:
 class App:
     def __init__(self, root):
         self.items=[] # List containing pointers to active objects in current window (except for the program title and navigation)
-        self.options=["Delete image Exif data from image","Change webm metadata","Create \"hidden\" double image","Create hidden monochrome image","Create cursed video[mp4/webm]"] #Contains options of dropdown menu
+        self.options=["Delete image Exif data from image","Change webm metadata","Create \"hidden\" double image","Create hidden monochrome image","Create cursed video[mp4/webm]","Distort .webm aspect ratios"] #Contains options of dropdown menu
         #setting title
         root.title("ImageboardTools - GUI edition")
         #setting window size
@@ -140,6 +140,31 @@ class App:
                 self.CURSELabelInfo2["text"]="Done."
         else:
             tk.messagebox.showinfo('Error','You didn\'t specify a file.')
+
+    def DISTORTButtonFile_command(self):
+        self.filename=filedialog.askopenfilename(initialdir = self.DISTORTEntryMain.get(),title = "Select file",filetypes = (("video files(webm)","*.webm"),("all files","*.*")))
+        self.DISTORTEntryMain.delete(0,tk.END)
+        self.DISTORTEntryMain.insert(0,self.filename)
+
+    def DISTORTButtonConfirm_command(self):
+        loc=self.DISTORTEntryMain.get()
+        distort=self.DISTORTEntrySec.get()
+        out=self.DISTORTEntryTert.get()
+        try:
+            distort=int(distort)
+        except Exception:
+            tk.messagebox.showinfo('Error','Please specify a valid integer as distortions/second value.')
+        if not out:
+            if aspectMagic(loc,distort):
+                self.DISTORTLabelInfo2["text"]="Done."
+            else:
+                tk.messagebox.showinfo('Error','Something went wrong. Make sure the input file path is valid.')
+        else:
+            if aspectMagic(loc,distort,out):
+                self.DISTORTLabelInfo2["text"]="Done."
+            else:
+                tk.messagebox.showinfo('Error','Something went wrong. Make sure the input file path is valid.')
+
     #Function to handle user choosing a program functionality
     def comboChange(self,event):
         cleanup(self.items)
@@ -155,6 +180,8 @@ class App:
             setupMONO(self)
         elif chosen==4:
             setupCURSE(self)
+        elif chosen==5:
+            setupDISTORT(self)
 
 
 
@@ -328,15 +355,6 @@ def setupEXIF(self):
     self.ExifLabelInfo2["text"] = "Image"
     self.ExifLabelInfo2.place(x=150,y=400,width=300,height=30)
     self.items+=[self.ExifLabelInfo2]
-
-    self.ExifLabelUpdate=tk.Label(root)
-    ft = tkFont.Font(family='Times',size=18)
-    self.ExifLabelUpdate["font"] = ft
-    self.ExifLabelUpdate["fg"] = "#000000"
-    self.ExifLabelUpdate["justify"] = "center"
-    self.ExifLabelUpdate["text"] = ""
-    self.ExifLabelUpdate.place(x=460,y=430,width=100,height=30)
-    self.items+=[self.ExifLabelUpdate]
 
     photo=loadImg(self,"./GUI_images/preview.png")
     self.previmage = tk.Label(root,image=photo[0])
@@ -551,15 +569,6 @@ def setupCURSE(self):
     self.CURSEButtonConfirm["command"] = self.CURSEButtonConfirm_command
     self.items+=[self.CURSEButtonConfirm]
 
-    self.CURSELabelUpdate=tk.Label(root)
-    ft = tkFont.Font(family='Times',size=18)
-    self.CURSELabelUpdate["font"] = ft
-    self.CURSELabelUpdate["fg"] = "#000000"
-    self.CURSELabelUpdate["justify"] = "center"
-    self.CURSELabelUpdate["text"] = ""
-    self.CURSELabelUpdate.place(x=460,y=430,width=100,height=30)
-    self.items+=[self.CURSELabelUpdate]
-
     self.CURSELabelInfo2=tk.Label(root)
     ft = tkFont.Font(family='Times',size=20)
     self.CURSELabelInfo2["font"] = ft
@@ -568,6 +577,104 @@ def setupCURSE(self):
     self.CURSELabelInfo2["text"] = ""
     self.CURSELabelInfo2.place(x=470,y=430,width=80,height=30)
     self.items+=[self.CURSELabelInfo2]
+
+def setupDISTORT(self):
+    self.DISTORTLabelInfo1=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.DISTORTLabelInfo1["font"] = ft
+    self.DISTORTLabelInfo1["fg"] = "#000000"
+    self.DISTORTLabelInfo1["anchor"] = "w"
+    self.DISTORTLabelInfo1["text"] = "Choose video file:"
+    self.DISTORTLabelInfo1.place(x=110,y=155,width=300,height=25)
+    self.items+=[self.DISTORTLabelInfo1]
+
+    self.DISTORTLabelInfo3=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.DISTORTLabelInfo3["font"] = ft
+    self.DISTORTLabelInfo3["fg"] = "#000000"
+    self.DISTORTLabelInfo3["anchor"] = "w"
+    self.DISTORTLabelInfo3["text"] = "Choose distortions/second:"
+    self.DISTORTLabelInfo3.place(x=110,y=220,width=300,height=25)
+    self.items+=[self.DISTORTLabelInfo3]
+
+    self.DISTORTLabelInfo4=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=10)
+    self.DISTORTLabelInfo4["font"] = ft
+    self.DISTORTLabelInfo4["fg"] = "#000000"
+    self.DISTORTLabelInfo4["anchor"] = "w"
+    self.DISTORTLabelInfo4["text"] = "(Must be int, best if it's a divisor of the framerate)"
+    self.DISTORTLabelInfo4.place(x=110,y=240,width=300,height=25)
+    self.items+=[self.DISTORTLabelInfo4]
+
+    self.DISTORTLabelInfo5=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=15)
+    self.DISTORTLabelInfo5["font"] = ft
+    self.DISTORTLabelInfo5["fg"] = "#000000"
+    self.DISTORTLabelInfo5["anchor"] = "w"
+    self.DISTORTLabelInfo5["text"] = "(optional) Outputfile path/name:"
+    self.DISTORTLabelInfo5.place(x=110,y=300,width=300,height=25)
+    self.items+=[self.DISTORTLabelInfo5]
+
+    self.DISTORTEntryMain=tk.Entry(root)
+    self.DISTORTEntryMain["borderwidth"] = "2px"
+    ft = tkFont.Font(family='Times',size=10)
+    self.DISTORTEntryMain["font"] = ft
+    self.DISTORTEntryMain["fg"] = "#000000"
+    self.DISTORTEntryMain["justify"] = "left"
+    self.DISTORTEntryMain["text"] = "DISTORTEntryMain"
+    self.DISTORTEntryMain.place(x=110,y=190,width=300,height=30)
+    self.items+=[self.DISTORTEntryMain]
+
+    self.DISTORTEntrySec=tk.Entry(root)
+    self.DISTORTEntrySec["borderwidth"] = "2px"
+    ft = tkFont.Font(family='Times',size=10)
+    self.DISTORTEntrySec["font"] = ft
+    self.DISTORTEntrySec["fg"] = "#000000"
+    self.DISTORTEntrySec["justify"] = "left"
+    self.DISTORTEntrySec["text"] = "DISTORTEntrySec"
+    self.DISTORTEntrySec.place(x=110,y=270,width=300,height=30)
+    self.items+=[self.DISTORTEntrySec]
+
+    self.DISTORTEntryTert=tk.Entry(root)
+    self.DISTORTEntryTert["borderwidth"] = "2px"
+    ft = tkFont.Font(family='Times',size=10)
+    self.DISTORTEntryTert["font"] = ft
+    self.DISTORTEntryTert["fg"] = "#000000"
+    self.DISTORTEntryTert["justify"] = "left"
+    self.DISTORTEntryTert["text"] = "DISTORTEntryTert"
+    self.DISTORTEntryTert.place(x=110,y=330,width=300,height=30)
+    self.items+=[self.DISTORTEntryTert]
+
+    self.DISTORTButtonFile=tk.Button(root)
+    self.DISTORTButtonFile["bg"] = "#181a1b"
+    ft = tkFont.Font(family='Times',size=18)
+    self.DISTORTButtonFile["font"] = ft
+    self.DISTORTButtonFile["fg"] = "#e8e6e3"
+    self.DISTORTButtonFile["justify"] = "center"
+    self.DISTORTButtonFile["text"] = "🗀"
+    self.DISTORTButtonFile.place(x=420,y=190,width=70,height=30)
+    self.DISTORTButtonFile["command"] = self.DISTORTButtonFile_command
+    self.items+=[self.DISTORTButtonFile]
+
+    self.DISTORTButtonConfirm=tk.Button(root)
+    self.DISTORTButtonConfirm["bg"] = "#181a1b"
+    ft = tkFont.Font(family='Times',size=20)
+    self.DISTORTButtonConfirm["font"] = ft
+    self.DISTORTButtonConfirm["fg"] = "#e8e6e3"
+    self.DISTORTButtonConfirm["justify"] = "center"
+    self.DISTORTButtonConfirm["text"] = "Create distorted video"
+    self.DISTORTButtonConfirm.place(x=110,y=430,width=300,height=30)
+    self.DISTORTButtonConfirm["command"] = self.DISTORTButtonConfirm_command
+    self.items+=[self.DISTORTButtonConfirm]
+
+    self.DISTORTLabelInfo2=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=20)
+    self.DISTORTLabelInfo2["font"] = ft
+    self.DISTORTLabelInfo2["fg"] = "#000000"
+    self.DISTORTLabelInfo2["justify"] = "center"
+    self.DISTORTLabelInfo2["text"] = ""
+    self.DISTORTLabelInfo2.place(x=470,y=430,width=80,height=30)
+    self.items+=[self.DISTORTLabelInfo2]
 
 def cleanup(items):
     for i in items:

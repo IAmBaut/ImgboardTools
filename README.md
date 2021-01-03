@@ -1,15 +1,25 @@
 # ImgboardTools
 
-Python code for a CLI tool with various features, mostly for use on imageboards.
+Python code with various features for file modifications, mostly for use on imageboards.
 
-Stuff is probably not very optimized and has no error handling, but it works.
+Has both a CLI and GUI.
+
+## Features so far (checked means implemented):
+
+- [x] Anonymize images by deleting EXIF data out of them.
+- [x] Change/Overwrite the metadata on a WEBM.
+- [x] Combine/Hide two images within each other by messing with PNG gamma values and brightness.
+- [x] Command line interface (CLI) to access features.
+- [x] Hide images in colored background by messing with PNG "trns" chunks. (sometimes called "ninja pngs")
+- [x] "Curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
+- [x] GUI application for the script. (Ugly, but functional.)
+- [x] Generate .webms that constantly change their own aspect ratio / sizes while playing.
+
+If you prefer images showing examples of some of these features, scroll down to the end of the readme.
 
 ## Requirements
 
-You obviously need python.
-
-For python you need the following libraries:
-* Pillow, get it with `pip install pillow`
+You need Python and the python library *Pillow*, get it with `pip install pillow`.
 
 You also need the following software/executables:
 * ffmpeg
@@ -17,7 +27,7 @@ You also need the following software/executables:
 
 ## Usage
 
-Works as a CLI tool. To get started use
+Works like most CLI tools. To get started use
 
     python ImgboardTools.py -h
 
@@ -37,7 +47,7 @@ Note that the help messages of argparse have some custom syntax:
 * Arguments in parentheses () are optional.
 * Arguments in braces {} are possible example values.
 
-There is also a (very ugly) GUI application to allow for access to the features of the script. It should work cross platform.
+There is also a GUI application to allow for access to the features of the script. It should work cross platform.
 
 The GUI is experimental and may not be as up to date as the CLI and troubleshooting will be less obvious on it. Use at your own risk.
 
@@ -49,17 +59,9 @@ So for example to mix two images you would call:
 
     python ImgboardTools.py -m front.png back.png
 
-Features so far (checked means implemented):
+or to generate a light blue ninja png:
 
-- [x] Anonymize images by deleting EXIF data out of them.
-- [x] Change/Overwrite the metadata on a WEBM.
-- [x] Combine/Hide two images within each other by messing with PNG gamma values and brightness
-- [x] Add command line interface to the program.
-- [x] Add feature to hide image in grey background by messing with PNG "trns" chunks and colors.
-- [x] Add feature to "curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
-- [x] Add a GUI application for the script. (This will most likely be an an affront to your eyes, but get the job done.)
-- [x] Add further info / explanations for the features to readme.md.
-- [x] Add feature to generate .webms with changing aspect ratio / sizes.
+    python ImgboardTools.py -g image.png 173 216 230
 
 ## Explanations
 
@@ -136,6 +138,24 @@ Generates a webm that upon playing constantly changes its size and aspect ratio,
 This trick works on a lot of imageboards and certain Videoplayers (but not all of them). VLC seems to be too slow and will partially have a black screen while displaying the resulting webm, mpv will display them fairly well. Some players (like for example the discord player) will have a fixed player size and "pad" the scaling video so the aspect stays the same and thus have the controls stay in one play (which destroys the effect.).
 
 The generation of such files is actually pretty simple, the original file is chopped into various segments with different height and width (randomly generated). Then these segments are concatenated. In the end the audio from the original file is copied to the new concatenated video. Thus it is mostly a matter of telling ffmpeg what values to use and how often.
+
+## Example images
+
+### Hidden image
+
+This hidden image was generated with the following two images:
+
+![Source images for hidden example image](https://gitlab.com/Baut/readme-images/-/raw/master/ImgboardTools/HiddenImageSource.png)
+
+and appears as follows on imageboards:
+
+![Hidden example image on imageboard](https://gitlab.com/Baut/readme-images/-/raw/master/ImgboardTools/HiddenImageExample.gif)
+
+### Ninja .png image
+
+![NinjaPng example on imageboard](https://gitlab.com/Baut/readme-images/-/blob/master/ImgboardTools/NinjaPngExample.gif)
+
+
 
 ## Troubleshooting
 

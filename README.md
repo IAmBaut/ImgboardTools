@@ -140,3 +140,5 @@ The generation of such files is actually pretty simple, the original file is cho
 ## Troubleshooting
 
 If you get some error from the check_call command, or the error message otherwise states that "ffmpeg" or "pngcrush" aren't executables, you need to add their savelocation to the windows PATH variable. If you are on Linux, make sure you have the dependencies installed.
+
+If you were to create a .webm with cursed length (with the -c option), and then try to have it change its aspect ratio constantly (with the -d option), the resulting file will most likely be corrupted. Don't do it. If you do it the other way around, the result may not be corrupted, but it won't work either, so just refrain from stacking the video effects.

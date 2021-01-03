@@ -2,9 +2,11 @@ try:
     from PIL import Image,ImageChops
 except ImportError:
     sys.exit("Module PIL missing.\nAborting.")
+from random import randint
 import subprocess
 import os
 import argparse
+import shutil
 
 def deleteExif(imagename):
     #Deletes Exif data from files by copying and saving the image.
@@ -161,6 +163,81 @@ def curseVid(inputfile,outputfile="cursed"):
                 print("Done. The webm file "+outputname+" now has corrupted length.")
                 return True
 
+def aspectMagic(inputfile,changesPerSec,outputfile="aspectMagic.webm"):
+    """
+    Expects a .webm and "animates" the aspect ratio, by assigning parts of it random height and width values in intervals
+    and then stitching these video files together again.
+    Works best when changesPerSec is a divisor of the framerate. If not things might desync.
+    Also the resulting file will be larger in filesize than the original.
+    """
+    #Function to get desired data from ffprobe return string.
+    def getdata(identifier,searchstr,inFormat=False):
+        key=identifier+"="
+        if not inFormat:
+            start=0
+        else:
+            start=info.find("[FORMAT]")
+        pos=searchstr.find(key,start)
+        end=searchstr.find("\n",pos+len(identifier))
+        return searchstr[pos+len(key):end][:-1]
+    changesPerSec=int(changesPerSec)   #Defines how many "transformations" we want every second. Making sure it's an int.
+    command='ffprobe -v quiet -show_format -show_streams'.split()+[inputfile]
+    info=subprocess.check_output(command).decode("utf-8")
+    #Getting the height, width, duration and bitrate of the webm.
+    #This bitrate value might not always be 100% correct, so if there are ever issues, it migh be worth investigating here.
+    duration=float(getdata("duration",info,True))#This is in seconds
+    width=int(getdata("width",info))
+    height=int(getdata("height",info))
+    bitrate=float(getdata("bit_rate",info,True))
+    #Create a folder to put temporary files into. First remove old folder in case it still exists.
+    if os.path.isdir("ImgboardTools_cache"):
+        shutil.rmtree("ImgboardTools_cache")
+    os.mkdir("ImgboardTools_cache")
+    #String to contain data that ffmpeg expects for concatenating files.
+    filestring=""
+    numberOfSegs=int((duration*changesPerSec)+1)
+    segmentLength=round(1/changesPerSec,4)
+    print("Starting to generate the temporary files needed...")
+    for i in range(numberOfSegs):
+        if i==0:
+            scale_w=1
+            scale_h=1
+        else:
+            #Generating random values for scaling between 0.01 and 0.99.
+            scale_w=round(randint(1,99)/100,2)
+            scale_h=round(randint(1,99)/100,2)
+        startpoint=round(i*segmentLength,4)
+        print("Generating temporary segment %i with aspect ratio %.2f:%.2f at %.2f seconds" % (i,scale_w,scale_h,startpoint))
+        outfile="tempfile_"+str(i)+".webm"
+        filestring+="file '"+outfile+"'\n"
+        #Calling ffmpeg to create the temporary files with different aspect ratios.
+        command=['ffmpeg','-hide_banner','-loglevel','quiet','-i',inputfile,"-ss",str(startpoint),"-t",str(segmentLength),"-vf",("scale=w=iw*"+str(scale_w)+":h=ih*"+str(scale_h)),"-an","-c:v","libvpx","-b:v",str(bitrate)+"k","ImgboardTools_cache/"+outfile]
+        subprocess.check_call(command)
+    #Writing the filestring to a .txt file because that's what ffmpeg needs.
+    with open("ImgboardTools_cache/data.txt",mode="w") as file:
+        file.write(filestring[:-1]) #Cutting off unneeded newline at end here.
+    #Deleting temporary_needAudio.webm if needed (because the program was interrupted in an earlier run)
+    try:
+        os.remove("temporary_needAudio.webm")
+    except Exception:
+        pass
+    #Concatenating videos.
+    command=['ffmpeg',  '-hide_banner', '-loglevel', 'quiet','-f', 'concat', '-safe', '0', '-i', 'ImgboardTools_cache/data.txt', '-an', '-c:v', 'copy', 'temporary_needAudio.webm']
+    subprocess.check_call(command)
+    #Removing temporary files we created earlier.
+    shutil.rmtree("ImgboardTools_cache")
+    #Delete file with same name as outputfile if necessary.
+    try:
+        os.remove(outputfile)
+    except Exception:
+        pass
+    #Copy the audio of the inputfile to the newly created concatenated video.
+    command="ffmpeg -hide_banner -loglevel quiet -i".split()+["temporary_needAudio.webm","-i",inputfile]+"-map 0:v -map 1:a? -c copy ".split()+[str(outputfile)]
+    subprocess.check_call(command)
+    #Removing last bit of temporary data.
+    os.remove("temporary_needAudio.webm")
+    return True
+
 """
 Parser info
 """
@@ -171,6 +248,7 @@ def main():
     parser.add_argument("-m",nargs="+",help="Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]",dest="mix")
     parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R,G,B)]",dest="greyify")
     parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile)]",dest="curse")
+    parser.add_argument("-d",nargs="+",help="Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]",dest="distort")
     args=parser.parse_args()
 
     if args.anonymize:
@@ -183,6 +261,8 @@ def main():
         greyifyImg(*args.greyify)
     if args.curse:
         curseVid(*args.curse)
+    if args.distort:
+        aspectMagic(*args.distort)
 
 if __name__ == '__main__':
     main()

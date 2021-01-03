@@ -23,12 +23,13 @@ Works as a CLI tool. To get started use
 
 which will display the help window:
 
-      -h, --help            show this help message and exit
-      -a ANONYMIZE          Delete identifying EXIF data on a jpg. [filename]
-      -w WEBM               Change "title" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]
-      -m MIX                Hide image in another image. [thumbnail_img, hidden_img,(mode{L/RGB/RGBA/CMYK})]
-      -g GREYIFY            Hide image on grey background. [imagepath,(R),(G),(B)]
-      -c CURSE              Curse a webm or mp4 video file length [inputfile,(outputfile)]
+       -h, --help                 show this help message and exit
+       -a ANONYMIZE               Delete identifying EXIF data on a jpg. [filename]
+       -w WEBM [WEBM ...]         Change "title" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]
+       -m MIX [MIX ...]           Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]
+       -g GREYIFY [GREYIFY ...]   Hide image on grey background. [imagepath,(R,G,B)]
+       -c CURSE [CURSE ...]       Curse a webm or mp4 video file length [inputfile,(outputfile)]
+       -d DISTORT [DISTORT ...]   Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]
 
 Note that the help messages of argparse have some custom syntax:
 
@@ -38,7 +39,7 @@ Note that the help messages of argparse have some custom syntax:
 
 There is also a (very ugly) GUI application to allow for access to the features of the script. It should work cross platform.
 
-The GUI is experimental and may not be as up to date as the CLI and troubleshooting will be much harder on it.
+The GUI is experimental and may not be as up to date as the CLI and troubleshooting will be less obvious on it. Use at your own risk.
 
 If you are on Windows you can save the GUI script as ".pyw" instead of ".py" to prevent the console from opening. This also means less feedback in case of errors though.
 
@@ -58,6 +59,7 @@ Features so far (checked means implemented):
 - [x] Add feature to "curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
 - [x] Add a GUI application for the script. (This will most likely be an an affront to your eyes, but get the job done.)
 - [x] Add further info / explanations for the features to readme.md.
+- [x] Add feature to generate .webms with changing aspect ratio / sizes.
 
 ## Explanations
 
@@ -127,6 +129,13 @@ If this is 0x84 the next 4 bytes contain the information for the video length. I
 In the case of this script if the identifier is 0x84 we replace it with 0x88 and insert 4 empty bytes of 0x00000000. Then we replace the 8 bytes after the identifier
 (just to clarify, this means we overwrite the empty bytes we just inserted as well) with the value 0x3ff0000000000000.
 You can play around with those values to see what they do, this particular value creates the kind of .webm that scales its length while playing.
+
+### Webms with changing aspect ratio / video size
+
+Generates a webm that upon playing constantly changes its size and aspect ratio, making clicking the controls impossible.
+This trick works on a lot of imageboards and certain Videoplayers (but not all of them). VLC seems to be too slow and will partially have a black screen while displaying the resulting webm, mpv will display them fairly well. Some players (like for example the discord player) will have a fixed player size and "pad" the scaling video so the aspect stays the same and thus have the controls stay in one play (which destroys the effect.).
+
+The generation of such files is actually pretty simple, the original file is chopped into various segments with different height and width (randomly generated). Then these segments are concatenated. In the end the audio from the original file is copied to the new concatenated video. Thus it is mostly a matter of telling ffmpeg what values to use and how often.
 
 ## Troubleshooting
 

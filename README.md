@@ -38,7 +38,7 @@ which will display the help window:
        -w WEBM [WEBM ...]         Change "title" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]
        -m MIX [MIX ...]           Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]
        -g GREYIFY [GREYIFY ...]   Hide image on grey background. [imagepath,(R,G,B)]
-       -c CURSE [CURSE ...]       Curse a webm or mp4 video file length [inputfile,(outputfile)]
+       -c CURSE [CURSE ...]       Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]
        -d DISTORT [DISTORT ...]   Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]
 
 Note that the help messages of argparse have some custom syntax:
@@ -120,8 +120,8 @@ You can also do these manipulations manually in a HEX editor.
 For *.mp4*:
 
 First we locate the string "mvhd" which has a hex value of 0x6D766864 (The 0x is a prefix to state that it's a hex value. In a Hex editor search for the bytes 6D 76 68 64). From there move another 12 bytes (1 byte = 1 hex value).
-This is where the interesting data is at: The first 8 bytes states how many units there are per second, while the next 8 bytes after that are how many units long the video is.
-To set this to a very big length we can set the first 8 bytes to 0x00000001 and the second 8 bytes to 0xFFFFFFFF (which is 4.294.967.295 in decimal).
+This is where the interesting data is at: The first 4 bytes states how many units there are per second, while the next 4 bytes after that are how many units long the video is.
+To set this to a very big length we can set the first 4 bytes to 0x00000001 and the second 4 bytes to 0xFFFFFFFF (which is 4.294.967.295 in decimal).
 
 For *.webm*:
 

@@ -119,48 +119,67 @@ def greyifyImg(imagepath,R=127,G=127,B=127):
     print("Done. Your new file is 'hidden.png'.")
     return True
 
-def curseVid(inputfile,outputfile="cursed"):
+def curseVid(inputfile,secarg="",hexdata=""):#secarg="cursed"
     """
     Creates "cursed" videofiles where the duration seems bugged by messing with header data:
     For mp4 files the duration is set as very very long
     For webm files the furation is buged in such a way that some players will show it as constantly growing.
     Note that this function does not chunk the inputfiles, so too big files (or too little RAM) might result in crashes.
     """
-    #Checking filetype
-    if len(inputfile)>=5 and inputfile[-4:]==".mp4":
-        if len(outputfile)<5 or outputfile[-4:]!=".mp4":
-            outputname=outputfile+".mp4"
+    isHexDef=False
+    #Argparse passes arguments as positional arguments, without identifiers. This is to find out what kind of argument was given.
+    if (len(secarg)>=5 and secarg[-4:]==".mp4") or (len(secarg)>=6 and secarg[-5:]==".webm"):
+        outputname=secarg
+        if hexdata:
+            hexstring=hexdata
+            isHexDef=True
+    else:
+        if len(secarg)==16:
+            hexstring=secarg
+            isHexDef=True
         else:
-            outputname=outputfile
+            print("Error. Please specify 8 bytes of data (=string of length 16)")
+        if (len(inputfile)>=5 and inputfile[-4:]==".mp4"):
+            outputname="cursed.mp4"
+        elif (len(inputfile)>=6 and inputfile[-5:]==".webm"):
+            outputname="cursed.webm"
+        if hexdata:
+            print("Error, either the second argument is not a valid video file, or you gave multiple hexdata strings as arguments")
+    if len(inputfile)>=5 and inputfile[-4:]==".mp4":
+        if not hexdata and not isHexDef:
+            hexstring="000000017FFFFFFF"    #The first 4 bytes are the units per second, the second are the total units.
+        else:
+            if len(hexdata)==16:
+                hexstring=hexdata
+            else:
+                print("Error. Please specify 8 bytes of data (=string of length 16)")
         with open(inputfile,"rb") as f:
             content=f.read().hex() #Turn file into a string of hex values
             #The header info we are looking for in a mp4 file starts with "mvhd" which is "6d 76 68 64"
             #Every 2 indexes of our string = 1 Hex value.
             startindex=content.find("6d766864")+8 #We jump 4 hex values to skip our mvhd string.
             workingindex=startindex+24 #12 bytes after that is the relevant data
-            unitspersec="00000001"
-            totalunits="7FFFFFFF" #max value, can also be negative
-            content=content[:workingindex]+unitspersec+totalunits+content[workingindex+16:] #Adding fake header data
+            content=content[:workingindex]+hexstring+content[workingindex+16:] #Adding fake header data
             with open(outputname,"wb") as file: #Saving file
                 file.write(bytes.fromhex(content))
-                print("Done. Your mp4 file "+outputname+" now has a very long corrupted length header.")
                 return True
     elif len(inputfile)>=6 and inputfile[-5:]==".webm":
-        if len(outputfile)<6 or outputfile[-5:]!=".webm":
-            outputname=outputfile+".webm"
+        if not hexdata and not isHexDef:
+            hexstring="3ff0000000000000"
         else:
-            outputname=outputfile
+            if len(hexdata)==16:
+                hexstring=hexdata
+            else:
+                print("Error. Please specify 8 bytes of data (=string of length 16)")
         with open(inputfile,"rb") as f:
             content=f.read().hex()
             startindex=content.find("2ad7b1")+6 #First we find 2A D7 B1
             index=content.find("4489",startindex)+4 #Then from there the first occurance of 44 89 is our relevant index
             if content[index:index+2]=="84": #This Hex byte contains the length of the duration header. If it is 84 we change it to 88 and have to add empty bytes to the file.
                 content=content[:index]+"88"+"00000000"+content[index+2:]
-            lengthchunk="3ff0000000000000"
-            content=content[:index+2]+lengthchunk+content[index+2+len(lengthchunk):] #Insert the new bugged headerchunk
+            content=content[:index+2]+hexstring+content[index+2+len(hexstring):] #Insert the new bugged headerchunk
             with open(outputname,"wb") as output: #Saving file
                 output.write(bytes.fromhex(content))
-                print("Done. The webm file "+outputname+" now has corrupted length.")
                 return True
 
 def aspectMagic(inputfile,changesPerSec,outputfile="aspectMagic.webm"):

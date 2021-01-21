@@ -42,17 +42,17 @@ class App:
         self.Combo=ttk.Combobox(root,values=self.options,state="readonly")
         self.Combo.set("Click here to choose functionality.")
         self.Combo.pack(padx=5,pady=5)
-        self.Combo.place(x=270,y=80,width=200,height=30)
+        self.Combo.place(x=270,y=80,width=250,height=30)
         self.Combo.bind("<<ComboboxSelected>>", self.comboChange)
 
 
     #---------
 
     #Buttons are handled here
-        
+
     def LeftFileButton_command(self):
         #Opens file dialog and puts data of filedialog in LeftFileEntry
-        self.filename=filedialog.askopenfilename(initialdir = self.LeftFileEntry.get(),title = "Select file",filetypes = (("jpeg files","*.jpg"),("png files","*.png"),("all files","*.*")))
+        self.filename=filedialog.askopenfilename(initialdir = self.LeftFileEntry.get(),title = "Select file",filetypes = (("images","*.jpg *.png"),("all files","*.*")))
         self.LeftFileEntry.delete(0,tk.END)
         self.LeftFileEntry.insert(0,self.filename)
         #Load the image the filedialog chose, if this fails, load example image
@@ -60,7 +60,7 @@ class App:
 
     def RightFileButton_command(self):
         #Opens file dialog and puts data of filedialog in LeftFileEntry
-        root.filename2=filedialog.askopenfilename(initialdir = self.RightFileEntry.get(),title = "Select file",filetypes = (("jpeg files","*.jpg"),("png files","*.png"),("all files","*.*")))
+        root.filename2=filedialog.askopenfilename(initialdir = self.RightFileEntry.get(),title = "Select file",filetypes = (("images","*.jpg *.png"),("all files","*.*")))
         self.RightFileEntry.delete(0,tk.END)
         self.RightFileEntry.insert(0,root.filename2)
         #Load the image the filedialog chose, if this fails, load example image
@@ -135,9 +135,17 @@ class App:
 
     def CURSEButtonConfirm_command(self):
         loc=self.CURSEEntryMain.get()
+        hexdata=self.CURSEEntrySec.get()
+        if len(hexdata)!=16:
+            tk.messagebox.showinfo('Error','This process expects a hexstring length of 16 (= 8 bytes).')
+            hexdata=""
         if (self.CURSEEntryMain.get()):
-            if (curseVid(loc)):
-                self.CURSELabelInfo2["text"]="Done."
+            if (hexdata):
+                if (curseVid(loc,hexdata)):
+                    self.CURSELabelInfo2["text"]="Done."
+            else:
+                if (curseVid(loc)):
+                    self.CURSELabelInfo2["text"]="Done."
         else:
             tk.messagebox.showinfo('Error','You didn\'t specify a file.')
 
@@ -228,7 +236,7 @@ def setupHide(self):
     self.LeftFileButton["font"] = ft
     self.LeftFileButton["fg"] = "#e8e6e3"
     self.LeftFileButton["justify"] = "center"
-    self.LeftFileButton["text"] = "🗀"
+    self.LeftFileButton["text"] = "open"
     self.LeftFileButton.place(x=240,y=130,width=40,height=30)
     self.LeftFileButton["command"] = self.LeftFileButton_command
     self.items+=[self.LeftFileButton]
@@ -249,7 +257,7 @@ def setupHide(self):
     self.RightFileButton["font"] = ft
     self.RightFileButton["fg"] = "#e8e6e3"
     self.RightFileButton["justify"] = "center"
-    self.RightFileButton["text"] = "🗀"
+    self.RightFileButton["text"] = "open"
     self.RightFileButton.place(x=530,y=130,width=40,height=30)
     self.RightFileButton["command"] = self.RightFileButton_command
     self.items+=[self.RightFileButton]
@@ -331,7 +339,7 @@ def setupEXIF(self):
     self.ExifButtonFile["font"] = ft
     self.ExifButtonFile["fg"] = "#e8e6e3"
     self.ExifButtonFile["justify"] = "center"
-    self.ExifButtonFile["text"] = "🗀"
+    self.ExifButtonFile["text"] = "open"
     self.ExifButtonFile.place(x=420,y=160,width=70,height=30)
     self.ExifButtonFile["command"] = self.ExifButtonFile_command
     self.items+=[self.ExifButtonFile]
@@ -407,7 +415,7 @@ def setupMONO(self):
     self.MONOButtonFile["font"] = ft
     self.MONOButtonFile["fg"] = "#e8e6e3"
     self.MONOButtonFile["justify"] = "center"
-    self.MONOButtonFile["text"] = "🗀"
+    self.MONOButtonFile["text"] = "open"
     self.MONOButtonFile.place(x=420,y=140,width=70,height=30)
     self.MONOButtonFile["command"] = self.MONOButtonFile_command
     self.items+=[self.MONOButtonFile]
@@ -475,7 +483,7 @@ def setupWebm(self):
     self.WebmButtonTop["font"] = ft
     self.WebmButtonTop["fg"] = "#e8e6e3"
     self.WebmButtonTop["justify"] = "center"
-    self.WebmButtonTop["text"] = "🗀"
+    self.WebmButtonTop["text"] = "open"
     self.WebmButtonTop.place(x=430,y=180,width=70,height=30)
     self.WebmButtonTop["command"] = self.WebmButtonTop_command
     self.items+=[self.WebmButtonTop]
@@ -537,6 +545,15 @@ def setupCURSE(self):
     self.CURSELabelInfo1.place(x=110,y=215,width=300,height=25)
     self.items+=[self.CURSELabelInfo1]
 
+    self.CURSELabelInfo2=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=12)
+    self.CURSELabelInfo2["font"] = ft
+    self.CURSELabelInfo2["fg"] = "#000000"
+    self.CURSELabelInfo2["anchor"] = "w"
+    self.CURSELabelInfo2["text"] = "(optional) HEX data to insert"
+    self.CURSELabelInfo2.place(x=110,y=285,width=300,height=25)
+    self.items+=[self.CURSELabelInfo2]
+
     self.CURSEEntryMain=tk.Entry(root)
     self.CURSEEntryMain["borderwidth"] = "2px"
     ft = tkFont.Font(family='Times',size=10)
@@ -547,13 +564,23 @@ def setupCURSE(self):
     self.CURSEEntryMain.place(x=110,y=250,width=300,height=30)
     self.items+=[self.CURSEEntryMain]
 
+    self.CURSEEntrySec=tk.Entry(root)
+    self.CURSEEntrySec["borderwidth"] = "2px"
+    ft = tkFont.Font(family='Times',size=10)
+    self.CURSEEntrySec["font"] = ft
+    self.CURSEEntrySec["fg"] = "#000000"
+    self.CURSEEntrySec["justify"] = "left"
+    self.CURSEEntrySec["text"] = "CURSEEntrySec"
+    self.CURSEEntrySec.place(x=110,y=310,width=300,height=30)
+    self.items+=[self.CURSEEntrySec]
+
     self.CURSEButtonFile=tk.Button(root)
     self.CURSEButtonFile["bg"] = "#181a1b"
     ft = tkFont.Font(family='Times',size=18)
     self.CURSEButtonFile["font"] = ft
     self.CURSEButtonFile["fg"] = "#e8e6e3"
     self.CURSEButtonFile["justify"] = "center"
-    self.CURSEButtonFile["text"] = "🗀"
+    self.CURSEButtonFile["text"] = "open"
     self.CURSEButtonFile.place(x=420,y=250,width=70,height=30)
     self.CURSEButtonFile["command"] = self.CURSEButtonFile_command
     self.items+=[self.CURSEButtonFile]
@@ -651,7 +678,7 @@ def setupDISTORT(self):
     self.DISTORTButtonFile["font"] = ft
     self.DISTORTButtonFile["fg"] = "#e8e6e3"
     self.DISTORTButtonFile["justify"] = "center"
-    self.DISTORTButtonFile["text"] = "🗀"
+    self.DISTORTButtonFile["text"] = "open"
     self.DISTORTButtonFile.place(x=420,y=190,width=70,height=30)
     self.DISTORTButtonFile["command"] = self.DISTORTButtonFile_command
     self.items+=[self.DISTORTButtonFile]

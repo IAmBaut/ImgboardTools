@@ -14,7 +14,6 @@ def deleteExif(imagename):
     image.save(imagename)
     print("EXIF data deleted")
     return True
-
 def changeWebmTitle(title,inputfile="vid.webm",outputfile=""):
     #changes the title attribute of the webm metadata
     #Adding .webm to the end if the user forgot it.
@@ -137,8 +136,6 @@ def curseVid(inputfile,secarg="",hexdata=""):#secarg="cursed"
         if len(secarg)==16:
             hexstring=secarg
             isHexDef=True
-        else:
-            print("Error. Please specify 8 bytes of data (=string of length 16)")
         if (len(inputfile)>=5 and inputfile[-4:]==".mp4"):
             outputname="cursed.mp4"
         elif (len(inputfile)>=6 and inputfile[-5:]==".webm"):
@@ -165,11 +162,9 @@ def curseVid(inputfile,secarg="",hexdata=""):#secarg="cursed"
                 return True
     elif len(inputfile)>=6 and inputfile[-5:]==".webm":
         if not hexdata and not isHexDef:
-            hexstring="3ff0000000000000"
+            hexstring="4ff0000000000000"
         else:
-            if len(hexdata)==16:
-                hexstring=hexdata
-            else:
+            if len(hexstring)!=16:
                 print("Error. Please specify 8 bytes of data (=string of length 16)")
         with open(inputfile,"rb") as f:
             content=f.read().hex()
@@ -267,7 +262,7 @@ def main():
     parser.add_argument("-w",nargs="+",help="Change \"title\" metadata of a webm. [title,(inputfilename=vid.webm),(outputfilename=inputfilename)]",dest="webm")
     parser.add_argument("-m",nargs="+",help="Hide image in another image. [thumbnail_img, hidden_img,(mode{L,RGB,RGBA,CMYK})]",dest="mix")
     parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R),(G),(B))]",dest="greyify")
-    parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile)]",dest="curse")
+    parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]",dest="curse")
     parser.add_argument("-d",nargs="+",help="Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]",dest="distort")
     args=parser.parse_args()
 

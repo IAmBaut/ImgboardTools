@@ -51,7 +51,7 @@ There is also a GUI application to allow for access to the features of the scrip
 
 The GUI is experimental and may not be as up to date as the CLI and troubleshooting will be less obvious on it. Use at your own risk.
 
-If you are on Windows you can save the GUI script as ".pyw" instead of ".py" to prevent the console from opening. This also means less feedback in case of errors though.
+If you are on Windows you can save the GUI script as `.pyw` instead of `.py` to prevent the console from opening. This also means less feedback in case of errors though.
 
 ## Examples
 
@@ -87,15 +87,17 @@ The .png file format allows for various "chunks" of other data to be shipped wit
 For further light reading on why gAMA chunks exist:  [Henri Sivonen's website](https://hsivonen.fi/png-gamma/)
 
 To hide one image in another with the help of a gAMA chunk, we first need to map these images to two different brightness ranges.
-We map the thumbnail image to a brightness range of 0-210 (which can be done by applying a linear transformation to each color value of `x=x/255\*210`) and the brightness values of the hidden image to a range of 214-255 (with the linear transformation for each color value of `x=214+(x/255)\*(255-214)`).
+We map the thumbnail image to a brightness range of 0-210 (which can be done by applying a linear transformation to each color value of `x=x/255*210`) and the brightness values of the hidden image to a range of 214-255 (with the linear transformation for each color value of `x=214+(x/255)*(255-214)`).
 As a result the hidden image is now extremely bright and appears to the normal eye almost white.
 Next we need to combine these two images. We do this by replacing every 4th pixel (so every pixel where both the x and y index are uneven) of the thumbnail image with the hidden image.
 For a image with sufficiently high resolution this will just look like the thumbnail image has gotten slightly brighter.
 
 Then we apply the gAMA chunk with a value of 0.023 to the image, which is extremely low. The program trying to display the png will now take the brightness of every pixel to the power of 0.023 and thus darken the image significantly.
-As a result the thumbnail image pixels appear almost black, while the extremely bright pixels of the hidden image now become normal and thus the hidden image becomes visible. Unfortunately due to 3/4ths of the pixels now being black the hidden image will appear darker.
+As a result the thumbnail image pixels appear almost black, while the extremely bright pixels of the hidden image now become normal and the hidden image becomes visible. Unfortunately due to 3/4ths of the pixels now being black the hidden image will appear darker.
 
 The last part to this is that a lot of programs don't apply the gAMA chunk consistently. A lot of imageboards (and some applications like Discord or even the Windows image previews) will ignore theses auxiliary chunks like the gAMA chunk in the preview, thus only making the thumbnail image visible. Once you expand the image the chunk gets applied and the hidden image becomes visible.
+
+Note that you can't really rely on this trick working for others unless you know they use the same program/OS as you. If they use some program that completely ignores or completely applies these chunks, the trick won't work. Additionally these images can exhibit artefacts when seen on some screens with different resolutions. 
 
 ### Greyification / Ninja images
 
@@ -109,7 +111,7 @@ Next a tRNS chunk is added with the color value of the background. In the previe
 
 ### Cursing video files
 
-Video files tend to have header information for the video player to know what to display and how to display it. We can mess with the this data at the right place to create weird effects or "cursed" videos.
+Video files tend to have header information for the video player to know what to display and how to display it. We can mess with this data at the right place to create weird effects or "cursed" videos.
 To edit these things we need to know where this data is contained. You can find the documentation for the filetypes here:
 
 * [.mp4 file documentation](https://www.cimarronsystems.com/wp-content/uploads/2017/04/Elements-of-the-H.264-VideoAAC-Audio-MP4-Movie-v2_0.pdf)
@@ -120,7 +122,7 @@ You can also do these manipulations manually in a HEX editor.
 For *.mp4*:
 
 First we locate the string "mvhd" which has a hex value of 0x6D766864 (The 0x is a prefix to state that it's a hex value. In a Hex editor search for the bytes 6D 76 68 64). From there move another 12 bytes (1 byte = 1 hex value).
-This is where the interesting data is at: The first 4 bytes states how many units there are per second, while the next 4 bytes after that are how many units long the video is.
+This is where the interesting data is at: The first 4 bytes state how many units there are per second, while the next 4 bytes after that are how many units long the video is.
 To set this to a very big length we can set the first 4 bytes to 0x00000001 and the second 4 bytes to 0xFFFFFFFF (which is 4.294.967.295 in decimal).
 
 For *.webm*:
@@ -135,7 +137,7 @@ You can play around with those values to see what they do, this particular value
 ### Webms with changing aspect ratio / video size
 
 Generates a webm that upon playing constantly changes its size and aspect ratio, making clicking the controls impossible.
-This trick works on a lot of imageboards and certain Videoplayers (but not all of them). VLC seems to be too slow and will partially have a black screen while displaying the resulting webm, mpv will display them fairly well. Some players (like for example the discord player) will have a fixed player size and "pad" the scaling video so the aspect stays the same and thus have the controls stay in one play (which destroys the effect.).
+This trick works on a lot of imageboards and certain Videoplayers (but not all of them). VLC seems to be too slow and will partially have a black screen while displaying the resulting webm (on windows that is. It seems to work fine on Linux), mpv will display them fairly well. Some players (like for example the discord player) will have a fixed player size and "pad" the scaling video so the aspect stays the same and thus have the controls stay in one play (which destroys the effect.).
 
 The generation of such files is actually pretty simple, the original file is chopped into various segments with different height and width (randomly generated). Then these segments are concatenated. In the end the audio from the original file is copied to the new concatenated video. Thus it is mostly a matter of telling ffmpeg what values to use and how often.
 
@@ -170,3 +172,4 @@ In this case with a (very modest) 3 changes per second. This can be much more or
 If you get some error from the check_call command, or the error message otherwise states that "ffmpeg" or "pngcrush" aren't executables, you need to add their savelocation to the windows PATH variable. If you are on Linux, make sure you have the dependencies installed.
 
 If you were to create a .webm with cursed length (with the -c option), and then try to have it change its aspect ratio constantly (with the -d option), the resulting file will most likely be corrupted. Don't do it. If you do it the other way around, the result may not be corrupted, but it won't work either, so just refrain from stacking the video effects.
+

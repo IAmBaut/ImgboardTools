@@ -221,7 +221,7 @@ def aspectMagic(inputfile,changesPerSec,outputfile="aspectMagic.webm"):
             scale_w=round(randint(1,99)/100,2)
             scale_h=round(randint(1,99)/100,2)
         startpoint=round(i*segmentLength,4)
-        print("Generating temporary segment %i with aspect ratio %.2f:%.2f at %.2f seconds" % (i,scale_w,scale_h,startpoint))
+        print("Generating temporary segment {:4d}/{:4d} with aspect ratio {:3.2f}:{:3.2f} at {:5.2f} seconds".format((i+1),numberOfSegs,scale_w,scale_h,startpoint))
         outfile="tempfile_"+str(i)+".webm"
         filestring+="file '"+outfile+"'\n"
         #Calling ffmpeg to create the temporary files with different aspect ratios.

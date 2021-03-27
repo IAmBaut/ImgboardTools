@@ -22,8 +22,10 @@ If you prefer images showing examples of some of these features, scroll down to 
 You need Python and the python library *Pillow*, get it with `pip install pillow`.
 
 You also need the following software/executables:
-* ffmpeg
+* ffmpeg (including ffprobe)
 * pngcrush
+
+If you are on a Windows system these need to either be located in the same directory as ImgboardTools.py, or added to the Windows PATH system variable.
 
 ## Usage
 
@@ -173,3 +175,6 @@ If you get some error from the check_call command, or the error message otherwis
 
 If you were to create a .webm with cursed length (with the -c option), and then try to have it change its aspect ratio constantly (with the -d option), the resulting file will most likely be corrupted. Don't do it. If you do it the other way around, the result may not be corrupted, but it won't work either, so just refrain from stacking the video effects.
 
+Make sure that the webm you use as input complies with the upload requirements of the imageboard you want to use (correct audio encoding, correct filesize). ImgboardTools does not change these settings, because not all imageboards have the same requirements. 
+
+Note that during the process of the "aspectMagic()" function a lot of new data is added, as essentially every change of aspect ratio adds new file header information. As a result the files will grow in size considerably (proportional to the amount of changes). If your file was close to the upload limit in size before it is likely that it's too big after the changes. Encode/Compress your webm accordingly beforehand.

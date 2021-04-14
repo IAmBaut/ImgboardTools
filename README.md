@@ -99,7 +99,7 @@ As a result the thumbnail image pixels appear almost black, while the extremely 
 
 The last part to this is that a lot of programs don't apply the gAMA chunk consistently. A lot of imageboards (and some applications like Discord or even the Windows image previews) will ignore theses auxiliary chunks like the gAMA chunk in the preview, thus only making the thumbnail image visible. Once you expand the image the chunk gets applied and the hidden image becomes visible.
 
-Note that you can't really rely on this trick working for others unless you know they use the same program/OS as you. If they use some program that completely ignores or completely applies these chunks, the trick won't work. Additionally these images can exhibit artefacts when seen on some screens with different resolutions. 
+Note that you can't really rely on this trick working for others unless you know they use the same program/OS as you. If they use some program that completely ignores or completely applies these chunks, the trick won't work. Additionally these images can exhibit artifacts when seen on some screens with different resolutions, specifically [Moiré patterns](https://en.wikipedia.org/wiki/Moir%C3%A9_pattern). 
 
 ### Greyification / Ninja images
 

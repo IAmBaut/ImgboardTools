@@ -4,6 +4,24 @@ Python code with various features for file modifications, mostly for use on imag
 
 Has both a CLI and GUI.
 
+## Disclaimer for everyone
+
+Jump to the index to see an overview of the topics discussed in this readme.
+
+Jump to the "example images" section if you want to see the GUI version in action and some images created with the program. 
+
+## Disclaimer for non programmers
+
+(You can skip this if you know how to use a command line and how to install dependencies)
+
+*I have no idea what a CLI is, nor do I know how to install dependencies and half those words don't even look like english*
+
+If you have no idea what this whole thing is and you just wanted to install a program and be done with it, I have good and bad news:
+
+The bad news is that this was never intended as a consumer level program. In fact I originally wrote it for personal use and it just grew from there. As a result this code uses dependencies, third party programs and is overall not optimized for a good user experience. Some things are intentionally made so they were easier to debug as a programmer.
+
+The good news is that you don't need to be a programmer to use it, nor do you need to understand most of the stuff written in this readme. If things break however (and they probably will at some point) you are on your own. You can jump to the section "Installation for non programmers" for a more in depth step by step guide on how to install this program on windows in a few minutes.
+
 ## Features so far (checked means implemented):
 
 - [x] Anonymize images by deleting EXIF data out of them.
@@ -19,7 +37,7 @@ If you prefer images showing examples of some of these features, scroll down to 
 
 ## Requirements
 
-You need Python and the python library *Pillow*, get it with `pip install pillow`.
+You need Python and the Python library *Pillow*, get it with `pip install pillow`.
 
 You also need the following software/executables:
 * ffmpeg (including ffprobe)
@@ -168,6 +186,26 @@ and appears as follows on imageboards:
 In this case with a (very modest) 3 changes per second. This can be much more or less.
 
 ![Distorted .webm example](https://gitlab.com/Baut/readme-images/-/raw/master/ImgboardTools/DistortionExample3PerSec.gif)
+
+## Installation for non programmers
+
+In this section it will be assumed that you have none of the required dependencies installed, are running windows 10 and have little to no knowledge of git.
+
+1. Installing Python: Python is the programming language this programm was written in. You can download it from [their official website](https://www.python.org/downloads/). Just download a version of Python 3. In the installation process there will be a checkbox named "add Python to Windows PATH" *make sure you check that*.
+
+2. Installing pip: Pip is a programm allowing for easier installation of Python dependencies. If your version of Python is older than 3.4 you already have it.
+
+3. Installing pillow: Pillow is a image modification library used by my code. Installing it is easy. First you open a command prompt (To do so, press `windows key + r` and enter cmd in the window. Alternatively you can search for "cmd" in your windows search when you just press the windows key once). A black window should appear. This is the command prompt. Type `pip install pillow` in this window and press enter. A bunch of text should appear and pillow should install.
+
+4. Executable dependencies: The program uses 3 (more like 2) external programs - ffmpeg (a very powerfull software that can do a lot of modifciations of video files), ffprobe (included in ffmpeg) and pngcrush (a command line utility that can easily edit png metadata). You have two ways you can install this: In any location by changing the windows PATH system variable (more involved, won't be explained here) and locally in the same directory as ImgboardTools.py (easier and thus the one explained here.)
+
+5. Download ffmpeg: For a non programmer you just want to download some executables (.exe files). Thankfully [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) has these for easy downloading. A 7zip archive can be found here: [Download ffmpeg here](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z). If this link doesn't work, visit the gyan.dev site or ffmpeg site directly and manually download this archive. Then extract it using 7zip or other programs that can extract .7z files. You only want the two files in the "bin" folder named `ffmpeg.exe` and `ffprobe.exe`.
+
+6. Download pngcrush: The site for pngcrush can be found [here] (https://pmt.sourceforge.io/pngcrush/). The download link can be found on sourceforge [here](https://sourceforge.net/projects/pmt/files/pngcrush-executables/). You want to choose the folder with the newest version number and click `pngcrush_X_X_X_w64.exe` if you have a 64 bit system and `pngcrush_X_X_X_w32.exe` if you have a 32 bit system. The Xes are version numbers. Rename your executable to just pngcrush.exe.
+
+7. Download this program: Almost done, now you need to download this program. If you are on github click the green button to the upper right with the download icon and the text "code". There click "Download ZIP". If you are on gitlab instead click on the download button without text (upper right) and choose your preferred archive type. If you don't know what that means, click "zip". After the ZIP file is downloaded, extract it and move the whole folder to wherever you want to program to exist.
+
+8. Move executables: Copy (or move/cut) the three executables (pngcrush.exe, ffmpeg.exe and ffprobe.exe) to the folder you extracted in step 7. It should be in the same location as "ImgboardTools.py" and "ImgboardTools - GUI edition.py". You can now start the program by clicking on "ImgboardTools - GUI edition.py". If you want to have a shortcut on your desktop, right click the GUI edition file and select "send to" and there "Desktop". You can rename this shortcut as you please. You can now open the program by clicking this icon. Files you created will appear in the folder you installed "ImgboardTools - GUI edition.py" in unless otherwise specified.
 
 ## Troubleshooting
 

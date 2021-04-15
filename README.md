@@ -191,9 +191,9 @@ In this case with a (very modest) 3 changes per second. This can be much more or
 
 In this section it will be assumed that you have none of the required dependencies installed, are running windows 10 and have little to no knowledge of git.
 
-1. Installing Python: Python is the programming language this programm was written in. You can download it from [their official website](https://www.python.org/downloads/). Just download a version of Python 3. In the installation process there will be a checkbox named "add Python to Windows PATH" *make sure you check that*.
+1. Installing Python: Python is the programming language this program was written in. You can download it from [their official website](https://www.python.org/downloads/). Just download a version of Python 3. In the installation process there will be a checkbox named "add Python to Windows PATH" *make sure you check that*.
 
-2. Installing pip: Pip is a programm allowing for easier installation of Python dependencies. If your version of Python is older than 3.4 you already have it.
+2. Installing pip: Pip is a program allowing for easier installation of Python dependencies. If your version of Python is older than 3.4 you already have it.
 
 3. Installing pillow: Pillow is a image modification library used by my code. Installing it is easy. First you open a command prompt (To do so, press `windows key + r` and enter cmd in the window. Alternatively you can search for "cmd" in your windows search when you just press the windows key once). A black window should appear. This is the command prompt. Type `pip install pillow` in this window and press enter. A bunch of text should appear and pillow should install.
 

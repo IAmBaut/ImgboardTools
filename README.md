@@ -4,6 +4,18 @@ Python code with various features for file modifications, mostly for use on imag
 
 Has both a CLI and GUI.
 
+## Index
+* [Disclaimer for everyone](#disclaimer-for-everyone)
+* [Disclaimer for non programmers](#disclaimer-for-non-programmers)
+* [Features so far (checked means implemented):](#features-so-far-checked-means-implemented)
+* [Requirements](#requirements)
+* [Usage](#usage)
+* [Examples](#examples)
+* [Explanations](#explanations)
+* [Example images](#example-images)
+* [Installation for non programmers](#installation-for-non-programmers)
+* [Troubleshooting](#troubleshooting)
+
 ## Disclaimer for everyone
 
 Jump to the index to see an overview of the topics discussed in this readme.

@@ -26,7 +26,7 @@ Jump to the "example images" section if you want to see the GUI version in actio
 
 (You can skip this if you know how to use a command line and how to install dependencies)
 
-*I have no idea what a CLI is, nor do I know how to install dependencies and half those words don't even look like english*
+***I have no idea what a CLI is, nor do I know how to install dependencies and half those words don't even look like english. Help.***
 
 If you have no idea what this whole thing is and you just wanted to install a program and be done with it, I have good and bad news:
 
@@ -205,7 +205,7 @@ In this section it will be assumed that you have none of the required dependenci
 
 1. Installing Python: Python is the programming language this program was written in. You can download it from [their official website](https://www.python.org/downloads/). Just download a version of Python 3. In the installation process there will be a checkbox named "add Python to Windows PATH". **Make sure you check that.**
 
-2. Installing pip: Pip is a program allowing for easier installation of Python dependencies. If your version of Python is older than 3.4 you already have it.
+2. Installing pip: Pip is a program allowing for easier installation of Python dependencies. If your version of Python is more up to date than 3.4 (meaning any version numbers that are higher) you already have it.
 
 3. Installing Pillow: Pillow is an image modification library used in this code. Installing it is easy. First you open a command prompt (To do so, press `windows key + r` and enter cmd in the window. Alternatively you can search for "cmd" in your windows search when you just press the windows key once). A black window should appear. This is the command prompt. Type `pip install pillow` in this window and press enter. A bunch of text should appear and Pillow should install.
 

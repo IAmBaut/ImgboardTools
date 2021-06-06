@@ -72,7 +72,7 @@ which will display the help window:
        -g GREYIFY [GREYIFY ...]   Hide image on grey background. [imagepath,(R,G,B)]
        -c CURSE [CURSE ...]       Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]
        -d DISTORT [DISTORT ...]   Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]
-       -t                         Windows only for now - test for required Executables.
+       -t                         Windows only for now - test for required executables.
 
 Note that the help messages of argparse have some custom syntax:
 

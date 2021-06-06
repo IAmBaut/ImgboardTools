@@ -279,10 +279,10 @@ def checkDependencyExecutables():
         print("All executables are accessible and you should be good to use the program.")
     elif Errors>0:
         if Errors==1:
-            print("\nThere was 1 missing Executable (as mentioned above). Please fix this issue before proceeding by either redownloading the executable or adding its location to the Windows PATH variable.")
+            print("\nThere was 1 missing executable (as mentioned above). Please fix this issue before proceeding by either redownloading the executable or adding its location to the Windows PATH variable.")
 
         else:
-            print("\nThere were",Errors,"missing Executables (as mentioned above). Please fix these issues before proceeding by either redownloading the executables or adding their location to the Windows PATH variable.")
+            print("\nThere were",Errors,"missing executables (as mentioned above). Please fix these issues before proceeding by either redownloading the executables or adding their location to the Windows PATH variable.")
 
 """
 Parser info
@@ -295,7 +295,7 @@ def main():
     parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R),(G),(B))]",dest="greyify")
     parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]",dest="curse")
     parser.add_argument("-d",nargs="+",help="Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]",dest="distort")
-    parser.add_argument("-t",action="store_true",help="Windows only for now - test for required Executables.",dest="test")
+    parser.add_argument("-t",action="store_true",help="Windows only for now - test for required executables.",dest="test")
     args=parser.parse_args()
 
     if args.anonymize:

@@ -253,6 +253,37 @@ def aspectMagic(inputfile,changesPerSec,outputfile="aspectMagic.webm"):
     print("Done. The webm",outputfile,"now changes its aspect ratio",changesPerSec,"times per second.")
     return True
 
+def checkDependencyExecutables():
+    """
+    --- WINDOWS ONLY, possible works on Linux, needs testing first. ---
+    Checks for ffmpeg, ffprobe and pngcrush in path locations to make identifying missing dependencies easier.
+    Probably a pretty bad solution, but it works.
+    """
+    Errors=0
+    try:
+        subprocess.run(['ffmpeg',"-h"],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        Errors+=1
+        print("ffmpeg is not accesible. This either means ffmpeg is not installed, or the location of the ffmpeg executable is not a windows PATH variable. \nParts of the program may not work without ffmpeg.")
+    try:
+        subprocess.run(['ffprobe',"-h"],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        Errors+=1
+        print("ffprobe is not accesible. This either means ffprobe is not installed, or the location of the ffprobe executable is not a windows PATH variable. \nParts of the program may not work without ffprobe.\nffprobe typically comes with ffmpeg.")
+    try:
+        subprocess.run(['pngcrush',"-h"],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        Errors+=1
+        print("pngcrush is not accesible. This either means pngcrush is not installed, or the location of the pngcrush executable is not a windows PATH variable. \nParts of the program may not work without pngcrush.")
+    if Errors==0:
+        print("All executables are accessible and you should be good to use the program.")
+    elif Errors>0:
+        if Errors==1:
+            print("\nThere was 1 missing Executable (as mentioned above). Please fix this issue before proceeding by either redownloading the executable or adding its location to the Windows PATH variable.")
+
+        else:
+            print("\nThere were",Errors,"missing Executables (as mentioned above). Please fix these issues before proceeding by either redownloading the executables or adding their location to the Windows PATH variable.")
+
 """
 Parser info
 """
@@ -264,6 +295,7 @@ def main():
     parser.add_argument("-g",nargs="+",help="Hide image on grey background. [imagepath,(R),(G),(B))]",dest="greyify")
     parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]",dest="curse")
     parser.add_argument("-d",nargs="+",help="Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]",dest="distort")
+    parser.add_argument("-t",action="store_true",help="Windows only for now - test for required Executables.",dest="test")
     args=parser.parse_args()
 
     if args.anonymize:
@@ -278,6 +310,8 @@ def main():
         curseVid(*args.curse)
     if args.distort:
         aspectMagic(*args.distort)
+    if args.test:
+        checkDependencyExecutables()
 
 if __name__ == '__main__':
     main()

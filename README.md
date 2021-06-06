@@ -72,6 +72,7 @@ which will display the help window:
        -g GREYIFY [GREYIFY ...]   Hide image on grey background. [imagepath,(R,G,B)]
        -c CURSE [CURSE ...]       Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]
        -d DISTORT [DISTORT ...]   Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]
+       -t                         Windows only for now - test for required Executables.
 
 Note that the help messages of argparse have some custom syntax:
 
@@ -87,7 +88,13 @@ If you are on Windows you can save the GUI script as `.pyw` instead of `.py` to 
 
 ## Examples
 
-So for example to mix two images you would call:
+It is a good idea to run a basic test of the dependencies before starting to use the program. This feature is currently CLI only. Make sure your command prompt working directory is the directory of ImgboardTools.py.
+
+    python ImgboardTools.py -t
+
+If this command names any errors, try fixing these first. If not you are good to go.
+
+Now to mix two images for example you would call:
 
     python ImgboardTools.py -m front.png back.png
 
@@ -221,7 +228,7 @@ In this section it will be assumed that you have none of the required dependenci
 
 ## Troubleshooting
 
-If you get some error from the check_call command, or the error message otherwise states that "ffmpeg" or "pngcrush" aren't executables, you need to add their savelocation to the windows PATH variable. If you are on Linux, make sure you have the dependencies installed.
+If you get some error from the check_call command, or the error message otherwise states that "ffmpeg" or "pngcrush" aren't executables, you need to add their savelocation to the windows PATH variable. If you are on Linux, make sure you have the dependencies installed. You can use `python ImgboardTools.py -t` to run a test of the required dependencies, which should help you narrow down where the problem lies.
 
 If you were to create a .webm with cursed length (with the -c option), and then try to have it change its aspect ratio constantly (with the -d option), the resulting file will most likely be corrupted. Don't do it. If you do it the other way around, the result may not be corrupted, but it won't work either, so just refrain from stacking the video effects.
 

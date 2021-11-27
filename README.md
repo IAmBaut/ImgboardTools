@@ -44,7 +44,7 @@ The good news is that you don't need to be a programmer to use it, nor do you ne
 - [x] "Curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
 - [x] GUI application for the script. (Ugly, but functional.)
 - [x] Generate .webms that constantly change their own aspect ratio / sizes while playing.
-- [x] Generate base64 encoded md5 hashes of files to search the archives with.
+- [x] Generate base64 encoded md5 hash strings of files to search the archives with.
 
 If you prefer images showing examples of some of these features, scroll down to the end of the readme.
 

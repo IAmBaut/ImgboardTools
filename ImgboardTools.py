@@ -6,7 +6,7 @@ from random import randint
 import subprocess
 import os
 import argparse
-import shutil
+import shutil, hashlib,base64
 
 def deleteExif(imagename):
     #Deletes Exif data from files by copying and saving the image.
@@ -253,6 +253,17 @@ def aspectMagic(inputfile,changesPerSec,outputfile="aspectMagic.webm"):
     print("Done. The webm",outputfile,"now changes its aspect ratio",changesPerSec,"times per second.")
     return True
 
+def generateMd5(inputfile):
+    """
+    Expects a file and generates a base64 encoded string of the md5 hash for searching the archive with
+    """
+    with open(inputfile,"rb") as file: #File needs to be loaded in binary mode for hash generation
+        md5hash = hashlib.md5()
+        while temp := file.read(4096): #This number should be a multiple of 128, because md5 hashs work with 128 byte digest blocks. Bigger chunks mean faster generation, but more memory used
+            md5hash.update(temp)
+        base64value=base64.b64encode(md5hash.digest())
+        return str(base64value,'utf-8')
+        
 def checkDependencyExecutables():
     """
     --- WINDOWS ONLY, possible works on Linux, needs testing first. ---

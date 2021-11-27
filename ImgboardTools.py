@@ -258,10 +258,14 @@ def generateMd5(inputfile):
     Expects a file and generates a base64 encoded string of the md5 hash for searching the archive with
     """
     with open(inputfile,"rb") as file: #File needs to be loaded in binary mode for hash generation
+        print("Generating md5 hash...", end="")
         md5hash = hashlib.md5()
         while temp := file.read(4096): #This number should be a multiple of 128, because md5 hashs work with 128 byte digest blocks. Bigger chunks mean faster generation, but more memory used
             md5hash.update(temp)
+        print(" Done. \nMd5 (in hex format) is '"+md5hash.hexdigest()+"'.")
+        print("Generating base64 encoded string of md5 hash...",end="")
         base64value=base64.b64encode(md5hash.digest())
+        print(" Done. \nBase64 encoded md5 hash is '"+str(base64value,'utf-8')+"'.")
         return str(base64value,'utf-8')
         
 def checkDependencyExecutables():
@@ -307,6 +311,7 @@ def main():
     parser.add_argument("-c",nargs="+",help="Curse a webm or mp4 video file length [inputfile,(outputfile),(hexdata)]",dest="curse")
     parser.add_argument("-d",nargs="+",help="Randomly change webm height and width. Works best if changesPerSec is divisor of framerate. [inputfile,changesPerSec,(outputfile)]",dest="distort")
     parser.add_argument("-t",action="store_true",help="Windows only for now - test for required executables.",dest="test")
+    parser.add_argument("-e",nargs=1,help="Generate base64 encoded md5 hash of file for searching the archive. [inputfile]",dest="encode")
     args=parser.parse_args()
 
     if args.anonymize:
@@ -323,6 +328,8 @@ def main():
         aspectMagic(*args.distort)
     if args.test:
         checkDependencyExecutables()
+    if args.encode:
+        generateMd5(*args.encode)
 
 if __name__ == '__main__':
     main()

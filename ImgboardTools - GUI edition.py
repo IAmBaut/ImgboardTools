@@ -11,7 +11,7 @@ except ImportError:
 class App:
     def __init__(self, root):
         self.items=[] # List containing pointers to active objects in current window (except for the program title and navigation)
-        self.options=["Delete image Exif data from image","Change webm metadata","Create \"hidden\" double image","Create hidden monochrome image","Create cursed video[mp4/webm]","Distort .webm aspect ratios"] #Contains options of dropdown menu
+        self.options=["Delete image Exif data from image","Change webm metadata","Create \"hidden\" double image","Create hidden monochrome image","Create cursed video[mp4/webm]","Distort .webm aspect ratios","Generate base64 encoded md5 hash"] #Contains options of dropdown menu
         #setting title
         root.title("ImageboardTools - GUI edition")
         #setting window size
@@ -173,6 +173,24 @@ class App:
             else:
                 tk.messagebox.showinfo('Error','Something went wrong. Make sure the input file path is valid.')
 
+    def md5FileButtonTop_command(self):
+        self.filename=filedialog.askopenfilename(initialdir = self.md5FileEntryTop.get(),title = "Select file")
+        self.md5FileEntryTop.delete(0,tk.END)
+        self.md5FileEntryTop.insert(0,self.filename)
+        self.md5HexOut.delete(0,tk.END)
+        self.md5HexOut2.delete(0,tk.END)
+    
+    def Md5ButtonConfirmation_command(self):
+        loc=self.md5FileEntryTop.get()
+        if not loc:
+            tk.messagebox.showinfo('Error','No input file was specified. Make sure the input file path is valid.')
+        else:
+            ret=generateMd5(loc)
+            self.md5HexOut.delete(0,tk.END)
+            self.md5HexOut.insert(0,ret[1])
+            self.md5HexOut2.delete(0,tk.END)
+            self.md5HexOut2.insert(0,ret[0])
+
     #Function to handle user choosing a program functionality
     def comboChange(self,event):
         cleanup(self.items)
@@ -190,6 +208,8 @@ class App:
             setupCURSE(self)
         elif chosen==5:
             setupDISTORT(self)
+        elif chosen==6:
+            setupMd5(self)
 
 
 
@@ -702,6 +722,83 @@ def setupDISTORT(self):
     self.DISTORTLabelInfo2["text"] = ""
     self.DISTORTLabelInfo2.place(x=470,y=430,width=80,height=30)
     self.items+=[self.DISTORTLabelInfo2]
+
+def setupMd5(self):
+    self.md5FileEntryTop=tk.Entry(root)
+    self.md5FileEntryTop["borderwidth"] = "2px"
+    ft = tkFont.Font(family='Times',size=10)
+    self.md5FileEntryTop["font"] = ft
+    self.md5FileEntryTop["fg"] = "#000000"
+    self.md5FileEntryTop["justify"] = "left"
+    self.md5FileEntryTop["text"] = "md5FileEntryTop"
+    self.md5FileEntryTop.place(x=110,y=180,width=300,height=30)
+    self.items+=[self.md5FileEntryTop]
+
+    self.md5FileButtonTop=tk.Button(root)
+    self.md5FileButtonTop["bg"] = "#181a1b"
+    ft = tkFont.Font(family='Times',size=18)
+    self.md5FileButtonTop["font"] = ft
+    self.md5FileButtonTop["fg"] = "#e8e6e3"
+    self.md5FileButtonTop["justify"] = "center"
+    self.md5FileButtonTop["text"] = "open"
+    self.md5FileButtonTop.place(x=430,y=180,width=70,height=30)
+    self.md5FileButtonTop["command"] = self.md5FileButtonTop_command
+    self.items+=[self.md5FileButtonTop]
+
+    self.infoLabel1=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.infoLabel1["font"] = ft
+    self.infoLabel1["fg"] = "#000000"
+    self.infoLabel1["anchor"] = "w"
+    self.infoLabel1["text"] = "Choose file:"
+    self.infoLabel1.place(x=110,y=140,width=200,height=25)
+    self.items+=[self.infoLabel1]
+
+    self.Md5ButtonConfirmation=tk.Button(root)
+    self.Md5ButtonConfirmation["bg"] = "#181a1b"
+    ft = tkFont.Font(family='Times',size=20)
+    self.Md5ButtonConfirmation["font"] = ft
+    self.Md5ButtonConfirmation["fg"] = "#e8e6e3"
+    self.Md5ButtonConfirmation["justify"] = "center"
+    self.Md5ButtonConfirmation["text"] = "Generate Md5"
+    self.Md5ButtonConfirmation.place(x=110,y=230,width=300,height=30)
+    self.Md5ButtonConfirmation["command"] = self.Md5ButtonConfirmation_command
+    self.items+=[self.Md5ButtonConfirmation]
+
+    self.md5LabelOutput=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.md5LabelOutput["font"] = ft
+    self.md5LabelOutput["fg"] = "#000000"
+    self.md5LabelOutput["anchor"] ="w"
+    self.md5LabelOutput["text"] = "MD5 (Hex format): "
+    self.md5LabelOutput.place(x=110,y=300,width=300,height=20)
+    self.items+=[self.md5LabelOutput]
+
+    self.md5HexOut=tk.Entry(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.md5HexOut["font"] = ft
+    self.md5HexOut["fg"] = "#000000"
+    self.md5HexOut["text"] = ""
+    self.md5HexOut.place(x=110,y=330,width=400,height=25)
+    self.items+=[self.md5HexOut]
+
+    self.md5Label2=tk.Label(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.md5Label2["font"] = ft
+    self.md5Label2["fg"] = "#000000"
+    self.md5Label2["anchor"] ="w"
+    self.md5Label2["text"] = "Base 64 encoded MD5 hash:"
+    self.md5Label2.place(x=110,y=370,width=300,height=20)
+    self.items+=[self.md5Label2]
+
+    self.md5HexOut2=tk.Entry(root)
+    ft = tkFont.Font(family='Times',size=18)
+    self.md5HexOut2["font"] = ft
+    self.md5HexOut2["fg"] = "#000000"
+    self.md5HexOut2["text"] = ""
+    self.md5HexOut2.place(x=110,y=400,width=400,height=25)
+    self.items+=[self.md5HexOut2]  
+
 
 def cleanup(items):
     for i in items:

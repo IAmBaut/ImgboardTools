@@ -266,7 +266,7 @@ def generateMd5(inputfile):
         print("Generating base64 encoded string of md5 hash...",end="")
         base64value=base64.b64encode(md5hash.digest())
         print(" Done. \nBase64 encoded md5 hash is '"+str(base64value,'utf-8')+"'.")
-        return str(base64value,'utf-8')
+        return (str(base64value,'utf-8'),md5hash.hexdigest())
         
 def checkDependencyExecutables():
     """

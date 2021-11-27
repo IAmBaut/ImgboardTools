@@ -44,6 +44,7 @@ The good news is that you don't need to be a programmer to use it, nor do you ne
 - [x] "Curse" .webm or .mp4 video file duration by messing with the file headers. <- note that these do not get buffered, so very large files will probably crash. The upload size limit on most imageboards probably makes this irrelevant though.
 - [x] GUI application for the script. (Ugly, but functional.)
 - [x] Generate .webms that constantly change their own aspect ratio / sizes while playing.
+- [x] Generate base64 encoded md5 hashes of files to search the archives with.
 
 If you prefer images showing examples of some of these features, scroll down to the end of the readme.
 
@@ -179,6 +180,14 @@ Generates a webm that upon playing constantly changes its size and aspect ratio,
 This trick works on a lot of imageboards and certain Videoplayers (but not all of them). VLC seems to be too slow and will partially have a black screen while displaying the resulting webm (on windows that is. It seems to work fine on Linux), mpv will display them fairly well. Some players (like for example the discord player) will have a fixed player size and "pad" the scaling video so the aspect stays the same and thus have the controls stay in one play (which destroys the effect.).
 
 The generation of such files is actually pretty simple, the original file is chopped into various segments with different height and width (randomly generated). Then these segments are concatenated. In the end the audio from the original file is copied to the new concatenated video. Thus it is mostly a matter of telling ffmpeg what values to use and how often.
+
+### Generating base64 encoded md5 hashes
+
+This isn't a file manipulation like most other functions, rather it's a convenience tool to generate a md5 hash of any file and display it both hex encoded and base64 encoded. 
+
+A lot of imageboards have archives (sometimes different archives serve different boards) which save old content on these imageboards before it is deleted. This in turn means that you can search these archives to find origins or sources of images, webms and files. You can also find older discussions this way. To make images easily searchable they are converted into hashes, most often [md5 hashes](https://en.wikipedia.org/wiki/MD5). This hash is in bytes however, so most archives use a [base64](https://en.wikipedia.org/wiki/Base64) encoded string of these hashes (and sometimes [hexadecimal](https://en.wikipedia.org/wiki/Hexadecimal) encoded strings). Think of a hash as a unique identifier for a file (technically they are not guaranteed to be unique, but very very unlikely to generate the same hash for different files unless deliberate effort has gone into designing one of the files for that exact purpose. You can read more [on wikipedia](https://en.wikipedia.org/wiki/MD5#Applications)). 
+
+This function is essentially the same function that you get when you "search an archive for Image MD5" via an extension such as 4chanX, but without requiring you to upload the file to an imgeboard first. Due to the fact that different imageboards use different archives (and sometimes there's even different archives for different boards) the hash is displayed as is and not as a link for any specific archive.
 
 ## Example images
 
